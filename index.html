@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>USCE HELPDESK</title>
+  
+  <!-- Google Fonts: Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- ⚙️ นำเข้าไฟล์ Config ส่วนกลาง -->
+  <script src="config.js"></script>
+
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col justify-between selection:bg-pink-200">
+
+  <div class="relative">
+    
+    <!-- 🟢 Header ส่วนแบนเนอร์สีชมพู (ปรับ Layout เป็นแบบ Navbar กระจายซ้าย-ขวา) -->
+    <header class="bg-[#ff5a85] text-white pt-6 sm:pt-8 pb-20 sm:pb-24 px-4 sm:px-8 shadow-sm relative">
+      <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+        
+        <!-- 👈 ฝั่งซ้าย: โลโก้ + ชื่อระบบ + สังกัด -->
+        <div class="flex flex-col sm:flex-row items-center text-center sm:text-left gap-3 sm:gap-4">
+          
+          <!-- โลโก้วงกลมขอบขาว (ถอดลิงก์ออกแล้ว ไม่สามารถกดเข้าไปได้) -->
+          <div class="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-full p-1 shadow-md border-2 border-white ring-4 ring-white/30 flex items-center justify-center shrink-0 overflow-hidden">
+            <img src='https://i.postimg.cc/hvcQS4LQ/images-(4).jpg' alt='Logo' class="w-full h-full object-cover rounded-full pointer-events-none select-none">
+          </div>
+
+          <!-- ข้อความหัวเรื่อง -->
+          <div>
+            <h1 id="appTitle" class="text-2xl sm:text-3xl font-extrabold tracking-wide drop-shadow-sm">
+              USCE HELPDESK
+            </h1>
+            <p class="text-xs sm:text-xs font-light leading-relaxed opacity-95 mt-0.5">
+              คณะกรรมการนิสิตปริญญาบัณฑิตคณะครุศาสตร์<br class="hidden sm:inline">
+              จุฬาลงกรณ์มหาวิทยาลัย ประจำปีการศึกษา 2569
+            </p>
+          </div>
+
+        </div>
+
+        <!-- 👉 ฝั่งขวา: ปุ่ม Login / User Info -->
+        <div id="authHeader" class="shrink-0 mt-1 sm:mt-0">
+          <a href="login.html" class="flex items-center gap-1.5 bg-white text-[#ff5a85] hover:bg-pink-50 px-4 py-2 rounded-full shadow-md text-xs font-bold transition-all transform hover:scale-105">
+            <i class="fa-solid fa-right-to-bracket"></i>
+            <span>เข้าสู่ระบบ</span>
+          </a>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Content ส่วนการ์ดเมนูหลัก -->
+    <main class="px-4 -mt-12 sm:-mt-14 mb-10 flex justify-center relative z-10">
+      <div class="bg-white w-full max-w-md rounded-[2.5rem] p-6 sm:p-8 shadow-xl shadow-pink-200/40 border border-pink-50">
+        
+        <h2 class="text-center font-bold text-gray-800 text-lg mb-6">
+          ยินดีต้อนรับนิสิตครุศาสตร์
+        </h2>
+
+        <!-- ปุ่มรายการเมนู 3 ปุ่มหลัก -->
+        <div class="space-y-4">
+          
+          <!-- เมนูที่ 1: แจ้งเรื่องร้องเรียน -->
+          <a href="report.html" onclick="handleProtectedLink(event, 'report.html')" class="w-full bg-white hover:bg-pink-50/30 p-4 rounded-2xl border border-slate-100 hover:border-pink-200 shadow-sm hover:shadow-md flex items-center justify-between transition-all duration-200 group cursor-pointer">
+            <div class="flex items-center gap-3.5">
+              <div class="w-11 h-11 rounded-2xl bg-[#fff0f4] text-[#ff5a85] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <i class="fa-regular fa-pen-to-square text-lg"></i>
+              </div>
+              <div class="text-left">
+                <h3 class="font-bold text-gray-800 text-sm sm:text-base group-hover:text-[#ff5a85] transition-colors leading-snug">แจ้งเรื่องร้องเรียน</h3>
+                <p class="text-xs text-gray-400 font-normal mt-0.5">ส่งข้อมูลปัญหาถึงคณะกรรมการ</p>
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right text-gray-300 group-hover:text-[#ff5a85] group-hover:translate-x-0.5 text-xs transition-all"></i>
+          </a>
+
+          <!-- เมนูที่ 2: ติดตามสถานะเรื่องร้องเรียน -->
+          <a href="tracking.html" onclick="handleProtectedLink(event, 'tracking.html')" class="w-full bg-white hover:bg-pink-50/30 p-4 rounded-2xl border border-slate-100 hover:border-pink-200 shadow-sm hover:shadow-md flex items-center justify-between transition-all duration-200 group cursor-pointer">
+            <div class="flex items-center gap-3.5">
+              <div class="w-11 h-11 rounded-2xl bg-[#fff0f4] text-[#ff5a85] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <i class="fa-solid fa-magnifying-glass text-lg"></i>
+              </div>
+              <div class="text-left">
+                <h3 class="font-bold text-gray-800 text-sm sm:text-base group-hover:text-[#ff5a85] transition-colors leading-snug">ติดตามสถานะเรื่องร้องเรียน</h3>
+                <p class="text-xs text-gray-400 font-normal mt-0.5">ตรวจสอบความคืบหน้าด้วย Ticket ID</p>
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right text-gray-300 group-hover:text-[#ff5a85] group-hover:translate-x-0.5 text-xs transition-all"></i>
+          </a>
+
+          <!-- เมนูที่ 3: ภาพรวมความโปร่งใส -->
+          <a href="dashboard.html" onclick="handleProtectedLink(event, 'dashboard.html')" class="w-full bg-white hover:bg-pink-50/30 p-4 rounded-2xl border border-slate-100 hover:border-pink-200 shadow-sm hover:shadow-md flex items-center justify-between transition-all duration-200 group cursor-pointer">
+            <div class="flex items-center gap-3.5">
+              <div class="w-11 h-11 rounded-2xl bg-[#fff0f4] text-[#ff5a85] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <i class="fa-solid fa-arrow-trend-up text-lg"></i>
+              </div>
+              <div class="text-left">
+                <h3 class="font-bold text-gray-800 text-sm sm:text-base group-hover:text-[#ff5a85] transition-colors leading-snug">ภาพรวมความโปร่งใส</h3>
+                <p class="text-xs text-gray-400 font-normal mt-0.5">ดูสถิติและเคสทั้งหมดของ กนค.</p>
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right text-gray-300 group-hover:text-[#ff5a85] group-hover:translate-x-0.5 text-xs transition-all"></i>
+          </a>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 🔔 Modal หน้าต่างเด้งแจ้งเตือนให้ Login / Register -->
+  <div id="authModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden transition-all duration-300">
+    <div class="bg-white w-full max-w-xs sm:max-w-sm rounded-[2rem] p-6 text-center shadow-2xl relative border border-pink-100 transform transition-all animate-in fade-in zoom-in-95">
+      
+      <!-- ปุ่มปิด X มุมขวาบน -->
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-100 transition-colors">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <!-- ไอคอนแม่กุญแจ -->
+      <div class="w-16 h-16 bg-pink-50 text-[#ff5a85] rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner">
+        <i class="fa-solid fa-user-lock"></i>
+      </div>
+
+      <!-- ข้อความแจ้งเตือน -->
+      <h3 class="text-lg font-bold text-gray-800 mb-1">กรุณาเข้าสู่ระบบก่อน</h3>
+      <p class="text-xs text-gray-500 mb-6 leading-relaxed">
+        คุณจำเป็นต้องเข้าสู่ระบบหรือสร้างบัญชีใหม่<br>เพื่อเข้าใช้งานเมนูนี้
+      </p>
+
+      <!-- ปุ่มเลือก 2 ตัวเลือก -->
+      <div class="space-y-2.5">
+        <a href="login.html" class="w-full bg-[#ff5a85] hover:bg-[#f44374] text-white font-bold py-3 rounded-2xl block text-sm shadow-md shadow-pink-200 transition-all flex items-center justify-center gap-2">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span>เข้าสู่ระบบ</span>
+        </a>
+        <a href="login.html" class="w-full bg-pink-50 hover:bg-pink-100 text-[#ff5a85] font-bold py-3 rounded-2xl block text-sm border border-pink-200 transition-all flex items-center justify-center gap-2">
+          <i class="fa-solid fa-user-plus"></i>
+          <span>สร้างบัญชีใหม่</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🟢 Modal ยืนยันการออกจากระบบ -->
+  <div id="logoutModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 transition-all duration-300">
+    <div id="logoutModalCard" class="bg-white rounded-[2rem] p-6 text-center max-w-sm w-full shadow-2xl space-y-4 transform transition-all scale-95 opacity-0">
+      
+      <!-- ไอคอนออกจากระบบ -->
+      <div class="w-16 h-16 bg-pink-100 text-[#ff5a85] rounded-full flex items-center justify-center mx-auto text-2xl">
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </div>
+      
+      <!-- ข้อความสอบถาม -->
+      <div>
+        <h3 class="text-xl font-bold text-gray-800">ออกจากระบบ</h3>
+        <p class="text-xs text-gray-500 mt-1">คุณต้องการออกจากระบบใช่หรือไม่?</p>
+      </div>
+      
+      <!-- ปุ่มกดยืนยัน / ยกเลิก -->
+      <div class="flex gap-3 pt-2">
+        <button onclick="closeLogoutModal()" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-gray-600 font-bold py-3 rounded-2xl text-xs transition-all active:scale-95">
+          ยกเลิก
+        </button>
+        <button onclick="handleLogout()" class="w-1/2 bg-[#ff5a85] hover:bg-[#e04870] text-white font-bold py-3 rounded-2xl text-xs transition-all shadow-md shadow-pink-200 active:scale-95">
+          ออกจากระบบ
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer ไอคอน Social Media -->
+  <footer class="pb-6 text-center">
+    <div class="flex items-center justify-center gap-5 text-gray-700 text-2xl">
+      
+      <!-- 🔵 ลิงก์ Facebook -->
+      <a href="https://www.facebook.com/USCE.CU/?locale=th_TH" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        class="hover:text-[#ff5a85] transition-colors" 
+        title="Facebook">
+        <i class="fa-brands fa-facebook"></i>
+      </a>
+
+      <!-- 📸 ลิงก์ Instagram -->
+      <a href="https://www.instagram.com/usce.cu?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        class="hover:text-[#ff5a85] transition-colors" 
+        title="Instagram">
+        <i class="fa-brands fa-instagram"></i>
+      </a>
+
+    </div>
+  </footer>
+
+  <!-- ⚙️ JavaScript จัดการระบบ Auth & Modals -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // โหลดค่า App Name จาก config.js
+      if (typeof CONFIG !== 'undefined' && CONFIG.APP_NAME) {
+        document.title = CONFIG.APP_NAME;
+        const appTitleEl = document.getElementById('appTitle');
+        if (appTitleEl) appTitleEl.innerText = CONFIG.APP_NAME;
+      }
+
+      checkAuthStatus();
+    });
+
+    // 1. ตรวจสอบสถานะการล็อกอิน
+    function checkAuthStatus() {
+      const authHeader = document.getElementById('authHeader');
+      const userJson = localStorage.getItem('currentUser');
+      
+      if (userJson && userJson !== 'null' && userJson !== 'undefined') {
+        try {
+          const user = JSON.parse(userJson);
+          const isAdmin = user.role === 'admin';
+
+          authHeader.innerHTML = `
+            <div class="flex items-center gap-2 bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-full shadow-md text-xs font-medium">
+              <i class="fa-solid fa-circle-user text-[#ff5a85] text-base"></i>
+              <span class="text-gray-800 font-semibold max-w-[100px] truncate">${user.name || 'ผู้ใช้งาน'}</span>
+              ${isAdmin ? `
+                <a href="admin-dashboard.html" class="bg-pink-100 text-[#ff5a85] text-[10px] px-2 py-0.5 rounded-full font-bold hover:bg-pink-200 transition-colors flex items-center gap-1" title="แดชบอร์ดผู้ดูแลระบบ">
+                  <i class="fa-solid fa-shield-halved"></i> Admin
+                </a>
+              ` : ''}
+              <button onclick="confirmLogout()" class="ml-1 text-red-500 hover:text-red-700 hover:bg-red-50 p-1 rounded-full transition-colors" title="ออกจากระบบ">
+                <i class="fa-solid fa-right-from-bracket"></i>
+              </button>
+            </div>
+          `;
+        } catch (e) {
+          console.error('Error parsing user data:', e);
+          localStorage.removeItem('currentUser');
+          renderDefaultLoginBtn(authHeader);
+        }
+      } else {
+        renderDefaultLoginBtn(authHeader);
+      }
+    }
+
+    function renderDefaultLoginBtn(container) {
+      container.innerHTML = `
+        <a href="login.html" class="flex items-center gap-1.5 bg-white text-[#ff5a85] hover:bg-pink-50 px-4 py-2 rounded-full shadow-md text-xs font-bold transition-all transform hover:scale-105">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span>เข้าสู่ระบบ</span>
+        </a>
+      `;
+    }
+
+    // 2. ฟังก์ชันดักจับปุ่มเมนู (ถ้ายังไม่ Login ให้เด้ง Popup)
+    function handleProtectedLink(event, targetUrl) {
+      const userJson = localStorage.getItem('currentUser');
+      
+      if (!userJson || userJson === 'null' || userJson === 'undefined') {
+        event.preventDefault(); // ระงับไม่ให้เปลี่ยนหน้า
+        openAuthModal();       // สั่งเปิด Popup
+        return false;
+      }
+    }
+
+    // 3. ฟังก์ชัน เปิด/ปิด Auth Modal
+    function openAuthModal() {
+      const modal = document.getElementById('authModal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeAuthModal() {
+      const modal = document.getElementById('authModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    // 4. ฟังก์ชันเปิด/ปิด Logout Modal
+    function confirmLogout() {
+      const modal = document.getElementById('logoutModal');
+      const card = document.getElementById('logoutModalCard');
+      
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        card.classList.remove('scale-95', 'opacity-0');
+        card.classList.add('scale-100', 'opacity-100');
+      }, 10);
+    }
+
+    function closeLogoutModal() {
+      const modal = document.getElementById('logoutModal');
+      const card = document.getElementById('logoutModalCard');
+      
+      card.classList.remove('scale-100', 'opacity-100');
+      card.classList.add('scale-95', 'opacity-0');
+      
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 200);
+    }
+
+    // 5. ฟังก์ชัน ลบ Session แล้วออกจากระบบจริง
+    function handleLogout() {
+      localStorage.removeItem('currentUser');
+      window.location.reload();
+    }
+  </script>
+</body>
+</html>

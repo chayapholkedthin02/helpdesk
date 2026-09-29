@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ภาพรวมความโปร่งใส - USCE HELPDESK</title>
+  
+  <!-- Google Fonts: Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- ⚙️ นำเข้าไฟล์ Config ส่วนกลาง -->
+  <script src="config.js"></script>
+
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col justify-between selection:bg-pink-200">
+
+  <div class="relative pb-12">
+    
+    <!-- 🟢 Header ส่วนแบนเนอร์สีชมพู (ธีมหลัก Navbar) -->
+    <header class="bg-[#ff5a85] text-white pt-6 pb-24 px-4 sm:px-8 shadow-sm relative">
+      <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+        
+        <!-- 👈 ฝั่งซ้าย: ปุ่มกลับ + โลโก้ + ชื่อระบบ -->
+        <div class="flex items-center gap-3 sm:gap-4 text-center sm:text-left">
+          <!-- ปุ่มกลับหน้าหลัก -->
+          <a href="index.html" class="w-10 h-10 bg-white/20 hover:bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-all shrink-0" title="กลับหน้าหลัก">
+            <i class="fa-solid fa-arrow-left text-sm"></i>
+          </a>
+
+          <!-- โลโก้วงกลมขอบขาว -->
+          <div class="w-14 h-14 sm:w-16 sm:h-16 bg-white rounded-full p-1 shadow-md border-2 border-white ring-2 ring-white/30 flex items-center justify-center shrink-0 overflow-hidden">
+            <img src='https://i.postimg.cc/hvcQS4LQ/images-(4).jpg' alt='Logo' class="w-full h-full object-cover rounded-full pointer-events-none select-none">
+          </div>
+
+          <div>
+            <h1 class="text-xl sm:text-2xl font-extrabold tracking-wide drop-shadow-sm">
+              ภาพรวมความโปร่งใส
+            </h1>
+            <p class="text-xs font-light leading-relaxed opacity-90 mt-0.5">
+              สถิติและสถานะการดำเนินงานเรื่องร้องเรียน (ข้อมูลไม่เปิดเผยตัวตน)
+            </p>
+          </div>
+        </div>
+
+        <!-- 👉 ฝั่งขวา: ป้ายแจ้งเตือนความโปร่งใส -->
+        <div class="hidden sm:flex items-center gap-2 bg-white/15 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/20 text-xs text-pink-50">
+          <i class="fa-solid fa-shield-cat text-base text-yellow-300"></i>
+          <span>รักษาความคุ้มครองข้อมูลส่วนบุคคล (PDPA)</span>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 -mt-14 relative z-10 space-y-6">
+
+      <!-- 📊 1. การ์ดสรุปสถิติ (Stat Cards) -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5">
+        
+        <!-- เคสทั้งหมด -->
+        <div class="bg-white rounded-3xl p-4 sm:p-5 shadow-lg shadow-slate-200/50 border border-slate-100 flex items-center justify-between">
+          <div>
+            <p class="text-xs text-gray-500 font-medium">เรื่องทั้งหมด</p>
+            <h3 id="statTotal" class="text-2xl sm:text-3xl font-black text-gray-800 mt-1">0</h3>
+          </div>
+          <div class="w-11 h-11 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-inbox text-[#ff5a85]"></i>
+          </div>
+        </div>
+
+        <!-- รอดำเนินการ -->
+        <div class="bg-white rounded-3xl p-4 sm:p-5 shadow-lg shadow-slate-200/50 border border-slate-100 flex items-center justify-between">
+          <div>
+            <p class="text-xs text-amber-600 font-medium">รอดำเนินการ</p>
+            <h3 id="statPending" class="text-2xl sm:text-3xl font-black text-amber-500 mt-1">0</h3>
+          </div>
+          <div class="w-11 h-11 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-clock"></i>
+          </div>
+        </div>
+
+        <!-- กำลังดำเนินการ -->
+        <div class="bg-white rounded-3xl p-4 sm:p-5 shadow-lg shadow-slate-200/50 border border-slate-100 flex items-center justify-between">
+          <div>
+            <p class="text-xs text-blue-600 font-medium">กำลังดำเนินการ</p>
+            <h3 id="statInProgress" class="text-2xl sm:text-3xl font-black text-blue-500 mt-1">0</h3>
+          </div>
+          <div class="w-11 h-11 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-spinner animate-spin"></i>
+          </div>
+        </div>
+
+        <!-- ดำเนินการเสร็จสิ้น -->
+        <div class="bg-white rounded-3xl p-4 sm:p-5 shadow-lg shadow-slate-200/50 border border-slate-100 flex items-center justify-between">
+          <div>
+            <p class="text-xs text-emerald-600 font-medium">แก้ไขเสร็จสิ้น</p>
+            <h3 id="statResolved" class="text-2xl sm:text-3xl font-black text-emerald-500 mt-1">0</h3>
+          </div>
+          <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 🔍 2. ส่วนกล่องค้นหา และ ตัวกรองสถานะ -->
+      <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-xl shadow-pink-200/30 border border-pink-50 flex flex-col md:flex-row gap-3 justify-between items-center">
+        
+        <!-- ช่องค้นหา -->
+        <div class="relative w-full md:w-80">
+          <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+          <input type="text" id="searchInput" oninput="filterTickets()" placeholder="ค้นหา Ticket ID หรือหัวข้อเรื่อง..." class="w-full bg-slate-50 border border-slate-200 pl-10 pr-4 py-2.5 rounded-2xl text-xs sm:text-sm focus:outline-none focus:border-[#ff5a85] focus:ring-2 focus:ring-pink-100 transition-all">
+        </div>
+
+        <!-- ตัวกรองหมวดหมู่และสถานะ -->
+        <div class="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
+          
+          <!-- กรองหมวดหมู่ -->
+          <select id="categoryFilter" onchange="filterTickets()" class="bg-slate-50 border border-slate-200 text-gray-700 text-xs rounded-2xl px-3 py-2.5 focus:outline-none focus:border-[#ff5a85]">
+            <option value="all">ทุกหมวดหมู่</option>
+            <option value="สถานที่และอุปกรณ์">สถานที่และอุปกรณ์</option>
+            <option value="การเรียนการสอน">การเรียนการสอน</option>
+            <option value="สวัสดิการนิสิต">สวัสดิการนิสิต</option>
+            <option value="กิจกรรมและอื่นๆ">กิจกรรมและอื่นๆ</option>
+          </select>
+
+          <!-- กรองสถานะ -->
+          <select id="statusFilter" onchange="filterTickets()" class="bg-slate-50 border border-slate-200 text-gray-700 text-xs rounded-2xl px-3 py-2.5 focus:outline-none focus:border-[#ff5a85]">
+            <option value="all">ทุกสถานะ</option>
+            <option value="รอดำเนินการ">รอดำเนินการ</option>
+            <option value="กำลังดำเนินการ">กำลังดำเนินการ</option>
+            <option value="ดำเนินการเสร็จสิ้น">ดำเนินการเสร็จสิ้น</option>
+          </select>
+
+        </div>
+
+      </div>
+
+      <!-- 📋 3. รายการตารางเคสเรื่องร้องเรียน -->
+      <div class="bg-white rounded-3xl shadow-xl shadow-pink-200/30 border border-pink-50 overflow-hidden">
+        
+        <!-- แถบหัวตาราง -->
+        <div class="p-4 sm:p-5 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-list-check text-[#ff5a85]"></i>
+            <h2 class="font-bold text-gray-800 text-sm sm:text-base">รายการเคสทั้งหมด</h2>
+          </div>
+          <span id="caseCountText" class="text-xs text-gray-500 font-normal">กำลังโหลด...</span>
+        </div>
+
+        <!-- รายการเคส -->
+        <div id="ticketContainer" class="divide-y divide-slate-100 min-h-[250px]">
+          <!-- ตัวหมุนโหลดข้อมูล -->
+          <div id="loadingState" class="p-12 text-center text-gray-400 space-y-3">
+            <i class="fa-solid fa-spinner fa-spin text-3xl text-[#ff5a85]"></i>
+            <p class="text-xs">กำลังโหลดข้อมูลความโปร่งใส...</p>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- 🔍 Modal แสดงรายละเอียดเคส (ไม่มีข้อมูลส่วนบุคคล) -->
+  <div id="detailModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden transition-all duration-300">
+    <div class="bg-white w-full max-w-lg rounded-[2rem] p-6 shadow-2xl relative border border-pink-100 max-h-[90vh] overflow-y-auto">
+      
+      <!-- ปุ่มปิด -->
+      <button onclick="closeDetailModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-100 transition-colors">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <!-- หัวข้อรายละเอียด -->
+      <div class="flex items-center gap-2.5 mb-4 border-b pb-3">
+        <div class="w-10 h-10 rounded-xl bg-pink-50 text-[#ff5a85] flex items-center justify-center shrink-0 text-lg">
+          <i class="fa-solid fa-file-lines"></i>
+        </div>
+        <div>
+          <span id="modalTicketId" class="text-xs font-bold text-[#ff5a85]">#TK-000</span>
+          <h3 id="modalTopic" class="font-bold text-gray-800 text-base leading-snug">หัวข้อเรื่อง</h3>
+        </div>
+      </div>
+
+      <div class="space-y-4 text-xs sm:text-sm">
+        
+        <!-- ข้อมูลแท็กสถานะ + หมวดหมู่ -->
+        <div class="flex flex-wrap gap-2">
+          <span id="modalCategory" class="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-medium">หมวดหมู่</span>
+          <span id="modalStatus" class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-medium">สถานะ</span>
+          <span id="modalDate" class="bg-slate-50 text-gray-400 px-3 py-1 rounded-full text-xs">วันที่</span>
+        </div>
+
+        <!-- รายละเอียดเคส -->
+        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+          <h4 class="font-bold text-gray-700 text-xs mb-1">รายละเอียดการร้องเรียน:</h4>
+          <p id="modalDetail" class="text-gray-600 leading-relaxed whitespace-pre-line text-xs sm:text-sm">-</p>
+        </div>
+
+        <!-- การดำเนินการของ กนค. -->
+        <div class="bg-pink-50/50 p-4 rounded-2xl border border-pink-100">
+          <h4 class="font-bold text-[#ff5a85] text-xs mb-1 flex items-center gap-1.5">
+            <i class="fa-solid fa-reply"></i> การตอบกลับ / การดำเนินการจาก กนค.:
+          </h4>
+          <p id="modalAction" class="text-gray-700 leading-relaxed whitespace-pre-line text-xs sm:text-sm font-medium">ยังไม่มีข้อมูลการดำเนินการ</p>
+        </div>
+
+        <!-- หมายเหตุ PDPA -->
+        <p class="text-[10px] text-gray-400 text-center pt-2">
+          <i class="fa-solid fa-lock text-[#ff5a85]"></i> ข้อมูลส่วนตัวของผู้แจ้งถูกปกปิดตามนโยบายความเป็นส่วนตัวของระบบ
+        </p>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer ไอคอน Social Media -->
+  <footer class="pb-6 text-center">
+    <div class="flex items-center justify-center gap-5 text-gray-700 text-2xl">
+      <a href="https://www.facebook.com/USCE.CU/?locale=th_TH" target="_blank" rel="noopener noreferrer" class="hover:text-[#ff5a85] transition-colors" title="Facebook">
+        <i class="fa-brands fa-facebook"></i>
+      </a>
+      <a href="https://www.instagram.com/usce.cu?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" class="hover:text-[#ff5a85] transition-colors" title="Instagram">
+        <i class="fa-brands fa-instagram"></i>
+      </a>
+    </div>
+  </footer>
+
+  <!-- ⚙️ JavaScript ดึงข้อมูลสถิติและเคสจาก Apps Script เท่านั้น -->
+  <script>
+    let allTickets = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchPublicTickets();
+    });
+
+    // 1. ดึงข้อมูลเคสจาก Apps Script
+    async function fetchPublicTickets() {
+      const container = document.getElementById('ticketContainer');
+      
+      try {
+        if (typeof CONFIG !== 'undefined' && CONFIG.SCRIPT_URL) {
+          const response = await fetch(CONFIG.SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'getPublicTickets' })
+          });
+          const result = await response.json();
+
+          if (result.status === 'success' && Array.isArray(result.tickets)) {
+            allTickets = result.tickets;
+          } else {
+            allTickets = [];
+          }
+        } else {
+          allTickets = [];
+        }
+      } catch (err) {
+        console.warn('ดึงข้อมูลจาก Script ไม่สำเร็จ:', err);
+        allTickets = [];
+      }
+
+      updateStats(allTickets);
+      renderTickets(allTickets);
+    }
+
+    // 2. คำนวณและอัปเดตสถิติ
+    function updateStats(tickets) {
+      const total = tickets.length;
+      const pending = tickets.filter(t => t.status === 'รอดำเนินการ').length;
+      const inProgress = tickets.filter(t => t.status === 'กำลังดำเนินการ').length;
+      const resolved = tickets.filter(t => t.status === 'ดำเนินการเสร็จสิ้น').length;
+
+      document.getElementById('statTotal').innerText = total;
+      document.getElementById('statPending').innerText = pending;
+      document.getElementById('statInProgress').innerText = inProgress;
+      document.getElementById('statResolved').innerText = resolved;
+    }
+
+    // 3. แสดงผลรายการเคส
+    function renderTickets(tickets) {
+      const container = document.getElementById('ticketContainer');
+      document.getElementById('caseCountText').innerText = `แสดง ${tickets.length} รายการ`;
+
+      if (tickets.length === 0) {
+        container.innerHTML = `
+          <div class="p-12 text-center text-gray-400 space-y-2">
+            <i class="fa-solid fa-folder-open text-3xl"></i>
+            <p class="text-xs">ไม่พบข้อมูลเคสเรื่องร้องเรียน</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = tickets.map(t => {
+        let statusBadge = '';
+        if (t.status === 'ดำเนินการเสร็จสิ้น') {
+          statusBadge = `<span class="bg-emerald-50 text-emerald-600 border border-emerald-200 px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> เสร็จสิ้น</span>`;
+        } else if (t.status === 'กำลังดำเนินการ') {
+          statusBadge = `<span class="bg-blue-50 text-blue-600 border border-blue-200 px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1"><i class="fa-solid fa-spinner animate-spin"></i> กำลังทำ</span>`;
+        } else {
+          statusBadge = `<span class="bg-amber-50 text-amber-600 border border-amber-200 px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1"><i class="fa-solid fa-clock"></i> รอดำเนินการ</span>`;
+        }
+
+        // แปลงอ็อบเจกต์เป็น JSON String แบบ safe เพื่อใส่ใน onclick
+        const safeTicketData = JSON.stringify(t).replace(/'/g, "&apos;");
+
+        return `
+          <div onclick='openDetailModal(${safeTicketData})' class="p-4 sm:p-5 hover:bg-pink-50/20 transition-colors cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 group">
+            <div class="space-y-1.5 max-w-2xl">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-xs font-bold text-[#ff5a85] bg-pink-50 px-2 py-0.5 rounded-lg border border-pink-100">${t.id}</span>
+                <span class="text-[11px] text-gray-500 bg-slate-100 px-2 py-0.5 rounded-lg">${t.category || 'ทั่วไป'}</span>
+                <span class="text-[11px] text-gray-400"><i class="fa-regular fa-calendar ml-1"></i> ${t.date || ''}</span>
+              </div>
+              <h3 class="font-bold text-gray-800 text-sm sm:text-base group-hover:text-[#ff5a85] transition-colors leading-snug">
+                ${t.topic}
+              </h3>
+              <p class="text-xs text-gray-500 line-clamp-1 font-light">
+                ${t.detail || ''}
+              </p>
+            </div>
+            
+            <div class="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-0 border-slate-100">
+              ${statusBadge}
+              <i class="fa-solid fa-chevron-right text-gray-300 group-hover:text-[#ff5a85] group-hover:translate-x-0.5 text-xs transition-all"></i>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 4. ระบบกรองข้อมูล (Filter & Search)
+    function filterTickets() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const cat = document.getElementById('categoryFilter').value;
+      const status = document.getElementById('statusFilter').value;
+
+      const filtered = allTickets.filter(t => {
+        const matchSearch = (t.id && t.id.toLowerCase().includes(search)) || 
+                            (t.topic && t.topic.toLowerCase().includes(search));
+        const matchCat = cat === 'all' || t.category === cat;
+        const matchStatus = status === 'all' || t.status === status;
+
+        return matchSearch && matchCat && matchStatus;
+      });
+
+      renderTickets(filtered);
+    }
+
+    // 5. ควบคุม Modal แสดงรายละเอียด
+    function openDetailModal(ticket) {
+      document.getElementById('modalTicketId').innerText = ticket.id || '';
+      document.getElementById('modalTopic').innerText = ticket.topic || '';
+      document.getElementById('modalCategory').innerText = ticket.category || 'ทั่วไป';
+      document.getElementById('modalDate').innerText = ticket.date || '';
+      document.getElementById('modalDetail').innerText = ticket.detail || 'ไม่มีรายละเอียด';
+      document.getElementById('modalAction').innerText = ticket.action || 'ยังไม่มีการระบุการดำเนินการเพิ่มเติม';
+
+      const statusEl = document.getElementById('modalStatus');
+      statusEl.innerText = ticket.status || 'รอดำเนินการ';
+      if (ticket.status === 'ดำเนินการเสร็จสิ้น') {
+        statusEl.className = 'bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-medium';
+      } else if (ticket.status === 'กำลังดำเนินการ') {
+        statusEl.className = 'bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-medium';
+      } else {
+        statusEl.className = 'bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-medium';
+      }
+
+      document.getElementById('detailModal').classList.remove('hidden');
+    }
+
+    function closeDetailModal() {
+      document.getElementById('detailModal').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>

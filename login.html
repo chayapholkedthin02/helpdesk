@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เข้าสู่ระบบ / สมัครสมาชิก</title>
+  
+  <!-- Google Fonts: Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- ⚙️ นำเข้าไฟล์ Config ส่วนกลาง -->
+  <script src="config.js"></script>
+
+  <style>
+    body { font-family: 'Prompt', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col justify-between selection:bg-pink-200">
+
+  <div class="relative w-full flex-grow">
+    <!-- Header สีชมพู -->
+    <header class="bg-[#ff5a85] text-white pt-10 pb-24 px-4 text-center relative shadow-sm">
+      <a href="index.html" class="absolute top-4 left-4 text-white/80 hover:text-white flex items-center gap-1.5 text-xs bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-sm transition-all font-semibold">
+        <i class="fa-solid fa-arrow-left"></i> กลับหน้าหลัก
+      </a>
+      <!-- แสดงชื่อระบบจาก CONFIG.APP_NAME -->
+      <h1 id="appTitle" class="text-2xl sm:text-3xl font-extrabold tracking-wide mt-2">USCE HELPDESK</h1>
+      <p class="text-xs sm:text-sm font-light opacity-90 mt-1">ระบบบัญชีผู้ใช้งาน</p>
+    </header>
+
+    <!-- Card แบบฟอร์ม -->
+    <main class="px-4 -mt-16 mb-10 flex justify-center relative z-10">
+      <div class="bg-white w-full max-w-md rounded-[2.5rem] p-6 sm:p-8 shadow-xl shadow-pink-200/40 border border-pink-50">
+        
+        <!-- 1. ฟอร์ม LOG IN -->
+        <div id="loginSection">
+          <h2 class="text-center font-bold text-gray-800 text-xl mb-6">เข้าสู่ระบบ</h2>
+          <form onsubmit="handleLogin(event)" class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-gray-700 mb-1">อีเมล / Email</label>
+              <input type="email" id="loginEmail" required placeholder="student@chula.ac.th" class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#ff5a85] focus:bg-white text-sm transition-all">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-700 mb-1">รหัสผ่าน / Password</label>
+              <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#ff5a85] focus:bg-white text-sm transition-all">
+            </div>
+            <button type="submit" id="loginBtn" class="w-full bg-[#ff5a85] hover:bg-[#e04870] active:scale-[0.98] text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-pink-200 transition-all text-sm mt-2 flex items-center justify-center gap-2">
+              <span>เข้าสู่ระบบ</span>
+            </button>
+          </form>
+          <div class="text-center mt-6 text-xs text-gray-500">
+            ยังไม่มีบัญชีใช่ไหม? 
+            <button onclick="toggleForm('register')" class="text-[#ff5a85] font-bold hover:underline ml-1">สร้างแอคเคาท์ใหม่</button>
+          </div>
+        </div>
+
+        <!-- 2. ฟอร์ม REGISTER (สมัครสมาชิก) -->
+        <div id="registerSection" class="hidden">
+          <h2 class="text-center font-bold text-gray-800 text-xl mb-6">สร้างแอคเคาท์ใหม่</h2>
+          <form onsubmit="handleRegister(event)" class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-gray-700 mb-1">ชื่อ-นามสกุล</label>
+              <input type="text" id="regName" required placeholder="สมชาย ใจดี" class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#ff5a85] focus:bg-white text-sm transition-all">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-700 mb-1">อีเมล / Email</label>
+              <input type="email" id="regEmail" required placeholder="student@chula.ac.th" class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#ff5a85] focus:bg-white text-sm transition-all">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-700 mb-1">รหัสผ่าน / Password</label>
+              <input type="password" id="regPassword" required placeholder="••••••••" class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#ff5a85] focus:bg-white text-sm transition-all">
+            </div>
+            <button type="submit" id="regBtn" class="w-full bg-[#ff5a85] hover:bg-[#e04870] active:scale-[0.98] text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-pink-200 transition-all text-sm mt-2 flex items-center justify-center gap-2">
+              <span>ยืนยันลงทะเบียน</span>
+            </button>
+          </form>
+          <div class="text-center mt-6 text-xs text-gray-500">
+            มีบัญชีอยู่แล้ว? 
+            <button onclick="toggleForm('login')" class="text-[#ff5a85] font-bold hover:underline ml-1">กลับไปเข้าสู่ระบบ</button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="pb-6 text-center text-xs text-gray-400">
+    &copy; คณะกรรมการนิสิตปริญญาบัณฑิตคณะครุศาสตร์ จุฬาฯ
+  </footer>
+
+  <!-- 🟢 Modal แจ้งเตือนสถานะ -->
+  <div id="statusModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 text-center max-w-sm w-full shadow-2xl space-y-4">
+      <div id="modalIconBg" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto text-2xl">
+        <i id="modalIcon" class="fa-solid"></i>
+      </div>
+      <h3 id="modalTitle" class="text-xl font-bold text-gray-800"></h3>
+      <p id="modalMessage" class="text-xs text-gray-500 leading-relaxed"></p>
+      
+      <button id="modalBtn" onclick="closeModal()" class="w-full bg-[#ff5a85] hover:bg-[#e04870] text-white font-bold py-3 rounded-2xl text-sm transition-all shadow-md">
+        ตกลง
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let modalCallback = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // โหลดค่า App Name จาก config.js
+      if (typeof CONFIG !== 'undefined' && CONFIG.APP_NAME) {
+        document.title = `เข้าสู่ระบบ / สมัครสมาชิก - ${CONFIG.APP_NAME}`;
+        document.getElementById('appTitle').innerText = CONFIG.APP_NAME;
+      }
+
+      // 🟢 [เพิ่มใหม่] เช็กสถานะถ้าผู้ใช้ล็อกอินอยู่แล้ว ให้เด้งไปหน้าปลายทางทันที
+      const userJson = localStorage.getItem('currentUser');
+      if (userJson && userJson !== 'null' && userJson !== 'undefined') {
+        try {
+          const user = JSON.parse(userJson);
+          if (user.role === 'admin') {
+            window.location.href = 'admin-dashboard.html';
+          } else {
+            window.location.href = 'index.html';
+          }
+        } catch (e) {
+          localStorage.removeItem('currentUser');
+        }
+      }
+    });
+
+    // สลับหน้าจอ Login / Register
+    function toggleForm(mode) {
+      const loginSection = document.getElementById('loginSection');
+      const registerSection = document.getElementById('registerSection');
+      
+      if (mode === 'register') {
+        loginSection.classList.add('hidden');
+        registerSection.classList.remove('hidden');
+      } else {
+        registerSection.classList.add('hidden');
+        loginSection.classList.remove('hidden');
+      }
+    }
+
+    // 🟢 1. ฟังก์ชันจัดการการ Log In
+    async function handleLogin(event) {
+      event.preventDefault();
+
+      if (typeof CONFIG === 'undefined' || !CONFIG.SCRIPT_URL) {
+        showModal(false, 'ตั้งค่าไม่ถูกต้อง', 'ไม่พบ SCRIPT_URL ในไฟล์ config.js');
+        return;
+      }
+
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const loginBtn = document.getElementById('loginBtn');
+
+      loginBtn.disabled = true;
+      loginBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>กำลังตรวจสอบ...</span>`;
+
+      try {
+        const response = await fetch(CONFIG.SCRIPT_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8' // ป้องกันติด CORS
+          },
+          body: JSON.stringify({
+            action: 'login',
+            email: email,
+            password: password
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          // บันทึกข้อมูลลงเครื่องเพื่อจำสถานะ Log In (รวมถึง role)
+          localStorage.setItem('currentUser', JSON.stringify(result.user));
+          
+          // 🟢 [เพิ่มใหม่] กำหนดปลายทางตาม Role
+          const targetPage = (result.user && result.user.role === 'admin') ? 'admin-dashboard.html' : 'index.html';
+
+          showModal(true, 'เข้าสู่ระบบสำเร็จ!', 'กำลังนำคุณไปยังหน้าถัดไป...', () => {
+            window.location.href = targetPage;
+          });
+        } else {
+          showModal(false, 'เข้าสู่ระบบไม่สำเร็จ', result.message || 'อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+        }
+
+      } catch (error) {
+        console.error('Login Error:', error);
+        showModal(false, 'เชื่อมต่อไม่สำเร็จ', 'ไม่สามารถเชื่อมต่อกับฐานข้อมูลได้ กรุณาลองใหม่อีกครั้ง');
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = `<span>เข้าสู่ระบบ</span>`;
+      }
+    }
+
+    // 🟢 2. ฟังก์ชันจัดการการ สมัครสมาชิก (Register)
+    async function handleRegister(event) {
+      event.preventDefault();
+
+      if (typeof CONFIG === 'undefined' || !CONFIG.SCRIPT_URL) {
+        showModal(false, 'ตั้งค่าไม่ถูกต้อง', 'ไม่พบ SCRIPT_URL ในไฟล์ config.js');
+        return;
+      }
+
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const regBtn = document.getElementById('regBtn');
+
+      regBtn.disabled = true;
+      regBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>กำลังลงทะเบียน...</span>`;
+
+      try {
+        const response = await fetch(CONFIG.SCRIPT_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify({
+            action: 'register',
+            name: name,
+            email: email,
+            password: password
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          showModal(true, 'สมัครสมาชิกสำเร็จ!', 'คุณสามารถเข้าสู่ระบบได้ทันที', () => {
+            toggleForm('login');
+            document.getElementById('loginEmail').value = email;
+          });
+        } else {
+          showModal(false, 'สมัครสมาชิกไม่สำเร็จ', result.message || 'ไม่สามารถลงทะเบียนได้');
+        }
+
+      } catch (error) {
+        console.error('Register Error:', error);
+        showModal(false, 'เชื่อมต่อไม่สำเร็จ', 'ไม่สามารถเชื่อมต่อกับฐานข้อมูลได้ กรุณาลองใหม่อีกครั้ง');
+      } finally {
+        regBtn.disabled = false;
+        regBtn.innerHTML = `<span>ยืนยันลงทะเบียน</span>`;
+      }
+    }
+
+    // ฟังก์ชันเปิดแสดง Pop-up Modal
+    function showModal(isSuccess, title, message, callback = null) {
+      const modal = document.getElementById('statusModal');
+      const iconBg = document.getElementById('modalIconBg');
+      const icon = document.getElementById('modalIcon');
+      const titleEl = document.getElementById('modalTitle');
+      const messageEl = document.getElementById('modalMessage');
+
+      titleEl.textContent = title;
+      messageEl.textContent = message;
+      modalCallback = callback;
+
+      if (isSuccess) {
+        iconBg.className = "w-16 h-16 bg-pink-100 text-[#ff5a85] rounded-full flex items-center justify-center mx-auto text-2xl";
+        icon.className = "fa-solid fa-check";
+      } else {
+        iconBg.className = "w-16 h-16 bg-rose-100 text-rose-500 rounded-full flex items-center justify-center mx-auto text-2xl";
+        icon.className = "fa-solid fa-xmark";
+      }
+
+      modal.classList.remove('hidden');
+
+      if (isSuccess && callback) {
+        setTimeout(() => {
+          closeModal();
+        }, 1500);
+      }
+    }
+
+    // ฟังก์ชันปิด Pop-up Modal
+    function closeModal() {
+      document.getElementById('statusModal').classList.add('hidden');
+      if (modalCallback) {
+        const cb = modalCallback;
+        modalCallback = null;
+        cb();
+      }
+    }
+  </script>
+</body>
+</html>

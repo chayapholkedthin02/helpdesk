@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>สร้างบัญชีใหม่ - กนค. HELPDESK</title>
+  
+  <!-- Google Fonts: Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body { font-family: 'Prompt', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col justify-between selection:bg-pink-200">
+
+  <div>
+    
+    <!-- Header ส่วนแบนเนอร์สีชมพู (z-0 อยู่ด้านหลัง) -->
+    <header class="bg-[#ff5a85] text-white pt-10 pb-28 px-4 shadow-sm text-center relative z-0">
+      <div class="max-w-md mx-auto flex flex-col items-center">
+        <!-- ปุ่มย้อนกลับ -->
+        <a href="index.html" class="absolute top-4 left-4 bg-white/20 hover:bg-white/30 text-white px-3.5 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm transition-all flex items-center gap-1.5 shadow-sm z-30">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>หน้าหลัก</span>
+        </a>
+
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-wide mt-2">
+          สร้างบัญชีใหม่
+        </h1>
+        <p class="text-xs font-light opacity-90 mt-1">
+          กนค. ครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย
+        </p>
+      </div>
+    </header>
+
+    <!-- Main Content ส่วนฟอร์มกรอกข้อมูล (z-20 ลอยลอยทับ Header ชัดเจน) -->
+    <main class="px-4 -mt-16 mb-10 flex justify-center relative z-20">
+      <div class="bg-white w-full max-w-md rounded-[2.5rem] p-6 sm:p-8 shadow-xl shadow-pink-200/40 border border-pink-50 relative z-30">
+        
+        <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-4">
+          
+          <!-- ช่องกรอก: ชื่อ-นามสกุล -->
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">
+              <i class="fa-regular fa-user text-[#ff5a85] mr-1"></i> ชื่อ-นามสกุล
+            </label>
+            <input type="text" id="regName" required placeholder="เช่น สมชาย ใจดี" 
+              class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:border-[#ff5a85] focus:bg-white text-sm outline-none transition-all">
+          </div>
+
+          <!-- ช่องกรอก: อีเมล -->
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">
+              <i class="fa-regular fa-envelope text-[#ff5a85] mr-1"></i> อีเมล
+            </label>
+            <input type="email" id="regEmail" required placeholder="student@student.chula.ac.th" 
+              class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:border-[#ff5a85] focus:bg-white text-sm outline-none transition-all">
+          </div>
+
+          <!-- ช่องกรอก: รหัสผ่าน -->
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">
+              <i class="fa-solid fa-lock text-[#ff5a85] mr-1"></i> รหัสผ่าน
+            </label>
+            <input type="password" id="regPassword" required placeholder="กำหนดรหัสผ่านอย่างน้อย 6 ตัวอักษร" minlength="6"
+              class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:border-[#ff5a85] focus:bg-white text-sm outline-none transition-all">
+          </div>
+
+          <!-- ช่องกรอก: ยืนยันรหัสผ่าน -->
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">
+              <i class="fa-solid fa-shield-halved text-[#ff5a85] mr-1"></i> ยืนยันรหัสผ่าน
+            </label>
+            <input type="password" id="regConfirmPassword" required placeholder="กรอกรหัสผ่านอีกครั้ง" minlength="6"
+              class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:border-[#ff5a85] focus:bg-white text-sm outline-none transition-all">
+          </div>
+
+          <!-- ปุ่มกดสมัครสมาชิก -->
+          <button type="submit" id="submitBtn" 
+            class="w-full mt-2 bg-[#ff5a85] hover:bg-[#f44374] text-white font-bold py-3.5 rounded-2xl shadow-md shadow-pink-200 active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm cursor-pointer">
+            <i class="fa-solid fa-user-plus"></i>
+            <span>สมัครสมาชิก</span>
+          </button>
+
+        </form>
+
+        <!-- สลับไปหน้าเข้าสู่ระบบ -->
+        <div class="mt-6 text-center text-xs text-gray-500">
+          มีบัญชีผู้ใช้งานอยู่แล้ว? 
+          <a href="login.html" class="text-[#ff5a85] font-bold hover:underline ml-1">เข้าสู่ระบบ</a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- 🔔 Custom UI Pop-up Modal (หน้าต่างเด้งแจ้งเตือนผลลัพธ์) -->
+  <div id="statusModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden transition-all duration-300">
+    <div class="bg-white w-full max-w-xs sm:max-w-sm rounded-[2rem] p-6 text-center shadow-2xl relative border border-pink-100 transform transition-all animate-in fade-in zoom-in-95">
+      
+      <!-- ไอคอนสถานะ (จะถูกเปลี่ยนด้วย JS) -->
+      <div id="modalIcon" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner"></div>
+
+      <!-- หัวข้อและข้อความ -->
+      <h3 id="modalTitle" class="text-lg font-bold text-gray-800 mb-1.5"></h3>
+      <p id="modalMessage" class="text-xs text-gray-500 mb-6 leading-relaxed"></p>
+
+      <!-- ปุ่มกดตกลง -->
+      <button id="modalBtn" onclick="closeStatusModal()" class="w-full font-bold py-3 rounded-2xl text-sm transition-all shadow-md">
+        ตกลง
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="pb-6 text-center">
+    <div class="flex items-center justify-center gap-5 text-gray-700 text-xl">
+      <a href="#" class="hover:text-[#ff5a85] transition-colors"><i class="fa-brands fa-facebook"></i></a>
+      <a href="#" class="hover:text-[#ff5a85] transition-colors"><i class="fa-brands fa-instagram"></i></a>
+    </div>
+  </footer>
+
+  <!-- 1. ดึง config.js -->
+  <script src="config.js"></script>
+
+  <!-- 2. สคริปต์ส่งข้อมูลสมัครสมาชิก + ควบคุม Modal -->
+  <script>
+    let isSuccessRedirect = false;
+
+    // ฟังก์ชันเปิด Pop-up Modal สวยๆ
+    function showStatusModal(isSuccess, title, message) {
+      const modal = document.getElementById('statusModal');
+      const modalIcon = document.getElementById('modalIcon');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalMessage = document.getElementById('modalMessage');
+      const modalBtn = document.getElementById('modalBtn');
+
+      isSuccessRedirect = isSuccess;
+
+      if (isSuccess) {
+        modalIcon.className = 'w-16 h-16 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner';
+        modalIcon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+        modalBtn.className = 'w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-2xl text-sm shadow-md shadow-emerald-100 transition-all cursor-pointer';
+        modalBtn.innerText = 'ไปหน้าหลัก';
+      } else {
+        modalIcon.className = 'w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner';
+        modalIcon.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
+        modalBtn.className = 'w-full bg-[#ff5a85] hover:bg-[#f44374] text-white font-bold py-3 rounded-2xl text-sm shadow-md shadow-pink-100 transition-all cursor-pointer';
+        modalBtn.innerText = 'ลองใหม่อีกครั้ง';
+      }
+
+      modalTitle.innerText = title;
+      modalMessage.innerText = message;
+      modal.classList.remove('hidden');
+    }
+
+    // ฟังก์ชันปิด Modal
+    function closeStatusModal() {
+      document.getElementById('statusModal').classList.add('hidden');
+      if (isSuccessRedirect) {
+        window.location.href = 'index.html'; // ถ้าสำเร็จ กดแล้วกลับหน้าหลัก
+      }
+    }
+
+    // ฟังก์ชันจัดการการ Register
+    async function handleRegister(event) {
+      event.preventDefault();
+
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const confirmPassword = document.getElementById('regConfirmPassword').value;
+      const submitBtn = document.getElementById('submitBtn');
+
+      // 1. ตรวจสอบว่ารหัสผ่านตรงกันไหม
+      if (password !== confirmPassword) {
+        showStatusModal(false, 'รหัสผ่านไม่ตรงกัน', 'กรุณาตรวจสอบรหัสผ่านและยืนยันรหัสผ่านให้อีกครั้ง');
+        return;
+      }
+
+      // 2. เช็ก URL จาก Config
+      if (typeof CONFIG === 'undefined' || !CONFIG.SCRIPT_URL) {
+        showStatusModal(false, 'ตั้งค่าไม่ถูกต้อง', 'ไม่พบ SCRIPT_URL ในไฟล์ config.js กรุณาตรวจสอบอีกครั้ง');
+        return;
+      }
+
+      // เปลี่ยนปุ่มเป็นสถานะกำลังโหลด
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึกข้อมูล...`;
+
+      try {
+        // ส่งข้อมูลไปยัง Google Apps Script (POST)
+        const response = await fetch(CONFIG.SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'register',
+            name: name,
+            email: email,
+            password: password
+          })
+        });
+
+        const result = await response.json();
+
+        // เช็กสถานะการตอบกลับ (รองรับทั้ง status และ result)
+        if (result.status === 'success' || result.result === 'success') {
+          // บันทึกล็อกอินเข้าเครื่องทันทีเมื่อสมัครสำเร็จ
+          const userData = result.user || { name: name, email: email };
+          localStorage.setItem('currentUser', JSON.stringify(userData));
+
+          showStatusModal(true, 'สมัครสมาชิกสำเร็จ!', 'สร้างบัญชีผู้ใช้งานของคุณเรียบร้อยแล้ว');
+        } else {
+          showStatusModal(false, 'สมัครสมาชิกไม่สำเร็จ', result.message || 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+        }
+
+      } catch (error) {
+        console.error(error);
+        showStatusModal(false, 'เชื่อมต่อไม่สำเร็จ', 'ไม่สามารถเชื่อมต่อกับฐานข้อมูลได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<i class="fa-solid fa-user-plus"></i> <span>สมัครสมาชิก</span>`;
+      }
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบผู้ดูแลระบบ - USCE HELPDESK</title>
+  
+  <!-- Google Fonts: Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- ⚙️ นำเข้าไฟล์ Config ส่วนกลาง -->
+  <script src="config.js"></script>
+
+  <style>
+    body { font-family: 'Prompt', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col justify-between selection:bg-pink-200">
+
+  <div class="relative w-full flex-grow">
+    <!-- Header ส่วนแบนเนอร์ Admin -->
+    <header class="bg-[#ff5a85] text-white pt-8 pb-24 px-4 shadow-sm relative">
+      <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+        
+        <!-- ฝั่งซ้าย: โลโก้และชื่อระบบ -->
+        <div class="text-center md:text-left">
+          <div class="flex items-center justify-center md:justify-start gap-2 mb-1">
+            <span class="bg-white/20 backdrop-blur-md text-white text-xs font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+              <i class="fa-solid fa-shield-halved"></i> Admin Control Panel
+            </span>
+          </div>
+          <h1 id="appTitle" class="text-2xl sm:text-3xl font-extrabold tracking-wide">USCE HELPDESK</h1>
+          <p class="text-xs sm:text-sm font-light opacity-90">ระบบจัดการเรื่องร้องเรียนสำหรับคณะกรรมการ</p>
+        </div>
+
+        <!-- ฝั่งขวา: เมนูผู้จัดการ & ปุ่มสลับหน้า -->
+        <div class="flex items-center gap-2">
+          <a href="index.html" class="bg-white/20 hover:bg-white/30 text-white px-3.5 py-2 rounded-full text-xs font-semibold backdrop-blur-sm transition-all flex items-center gap-1.5">
+            <i class="fa-solid fa-house"></i> หน้าหลักนิสิต
+          </a>
+          
+          <div id="adminUserBadge" class="bg-white text-gray-800 px-3.5 py-1.5 rounded-full shadow-md text-xs font-bold flex items-center gap-2">
+            <i class="fa-solid fa-user-gear text-[#ff5a85]"></i>
+            <span id="adminName">ผู้ดูแลระบบ</span>
+            <button onclick="confirmLogout()" class="text-red-500 hover:text-red-700 ml-1" title="ออกจากระบบ">
+              <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 -mt-14 mb-12 relative z-10 space-y-6">
+      
+      <!-- 🟢 1. การ์ดสรุปสถิติ (Stats Overview) -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <!-- เคสทั้งหมด -->
+        <div class="bg-white p-4 sm:p-5 rounded-3xl shadow-sm border border-slate-100 flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-pink-50 text-[#ff5a85] flex items-center justify-center text-xl shrink-0">
+            <i class="fa-solid fa-inbox"></i>
+          </div>
+          <div>
+            <p class="text-xs text-gray-400 font-medium">เรื่องทั้งหมด</p>
+            <h3 id="statTotal" class="text-xl sm:text-2xl font-extrabold text-gray-800">0</h3>
+          </div>
+        </div>
+
+        <!-- รอดำเนินการ -->
+        <div class="bg-white p-4 sm:p-5 rounded-3xl shadow-sm border border-slate-100 flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center text-xl shrink-0">
+            <i class="fa-solid fa-clock"></i>
+          </div>
+          <div>
+            <p class="text-xs text-gray-400 font-medium">รอดำเนินการ</p>
+            <h3 id="statPending" class="text-xl sm:text-2xl font-extrabold text-amber-500">0</h3>
+          </div>
+        </div>
+
+        <!-- กำลังดำเนินการ -->
+        <div class="bg-white p-4 sm:p-5 rounded-3xl shadow-sm border border-slate-100 flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center text-xl shrink-0">
+            <i class="fa-solid fa-spinner"></i>
+          </div>
+          <div>
+            <p class="text-xs text-gray-400 font-medium">กำลังดำเนินการ</p>
+            <h3 id="statProgress" class="text-xl sm:text-2xl font-extrabold text-blue-500">0</h3>
+          </div>
+        </div>
+
+        <!-- แก้ไขเรียบร้อย -->
+        <div class="bg-white p-4 sm:p-5 rounded-3xl shadow-sm border border-slate-100 flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center text-xl shrink-0">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <div>
+            <p class="text-xs text-gray-400 font-medium">เสร็จสิ้นแล้ว</p>
+            <h3 id="statResolved" class="text-xl sm:text-2xl font-extrabold text-emerald-500">0</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🟢 2. กล่องค้นหา / ตัวกรอง & รายการเรื่องร้องเรียน -->
+      <div class="bg-white rounded-[2.5rem] p-5 sm:p-7 shadow-xl shadow-pink-200/30 border border-pink-50 space-y-5">
+        
+        <!-- ค้นหา & ตัวกรอง -->
+        <div class="flex flex-col sm:flex-row gap-3 justify-between items-center">
+          <div class="relative w-full sm:w-72">
+            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+            <input type="text" id="searchInput" onkeyup="filterTickets()" placeholder="ค้นหา Ticket ID, เรื่อง, ชื่อ..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs focus:outline-none focus:border-[#ff5a85]">
+          </div>
+
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <select id="statusFilter" onchange="filterTickets()" class="w-full sm:w-auto px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-gray-700 focus:outline-none focus:border-[#ff5a85]">
+              <option value="ALL">สถานะทั้งหมด</option>
+              <option value="รอดำเนินการ">รอดำเนินการ</option>
+              <option value="กำลังดำเนินการ">กำลังดำเนินการ</option>
+              <option value="เสร็จสิ้น">เสร็จสิ้น</option>
+              <option value="ปฏิเสธ">ปฏิเสธเรื่อง</option>
+            </select>
+            <button onclick="fetchAdminTickets()" class="bg-pink-50 text-[#ff5a85] hover:bg-pink-100 p-2.5 rounded-2xl transition-all shrink-0" title="รีเฟรชข้อมูล">
+              <i class="fa-solid fa-rotate-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- ตารางข้อมูล เคสทั้งหมด -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-100 text-gray-400 text-[11px] uppercase tracking-wider font-semibold">
+                <th class="py-3 px-3">Ticket ID</th>
+                <th class="py-3 px-3">วันที่แจ้ง</th>
+                <th class="py-3 px-3">หัวข้อเรื่อง</th>
+                <th class="py-3 px-3">หมวดหมู่</th>
+                <th class="py-3 px-3 text-center">รูปภาพ</th>
+                <th class="py-3 px-3 text-center">สถานะ</th>
+                <th class="py-3 px-3 text-center">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="ticketTableBody" class="text-xs divide-y divide-slate-50">
+              <!-- JS จะสร้าง แถวข้อมูล ตรงนี้ -->
+              <tr>
+                <td colspan="7" class="py-12 text-center text-gray-400">
+                  <i class="fa-solid fa-spinner fa-spin text-2xl mb-2 text-[#ff5a85]"></i>
+                  <p>กำลังโหลดข้อมูล...</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="pb-6 text-center text-xs text-gray-400">
+    &copy; คณะกรรมการนิสิตปริญญาบัณฑิตคณะครุศาสตร์ จุฬาฯ
+  </footer>
+
+  <!-- 🟢 Modal ดูรายละเอียด & อัปเดตสถานะ Ticket -->
+  <div id="ticketModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-[2rem] p-6 max-w-lg w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      
+      <div class="flex justify-between items-start border-b border-slate-100 pb-3">
+        <div>
+          <span id="modalTicketId" class="text-xs font-bold text-[#ff5a85] bg-pink-50 px-2.5 py-1 rounded-full">TK-XXXXX</span>
+          <h3 id="modalSubject" class="text-base font-bold text-gray-800 mt-2">หัวข้อเรื่องร้องเรียน</h3>
+        </div>
+        <button onclick="closeTicketModal()" class="text-gray-400 hover:text-gray-600 p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- ข้อมูลผู้แจ้งและรายละเอียด -->
+      <div class="space-y-3 text-xs bg-slate-50 p-4 rounded-2xl">
+        <div class="grid grid-cols-2 gap-2 text-gray-600">
+          <p><strong>ผู้แจ้ง:</strong> <span id="modalReporter">-</span></p>
+          <p><strong>หมวดหมู่:</strong> <span id="modalCategory">-</span></p>
+          <p><strong>วันที่:</strong> <span id="modalDate">-</span></p>
+          <p><strong>สถานะปัจจุบัน:</strong> <span id="modalCurrentStatus" class="font-bold">-</span></p>
+        </div>
+        <hr class="border-slate-200">
+        <div>
+          <strong class="text-gray-700 block mb-1">รายละเอียดปัญหา:</strong>
+          <p id="modalDetail" class="text-gray-600 whitespace-pre-line leading-relaxed">...</p>
+        </div>
+
+        <!-- 🖼️ ส่วนแสดงรูปภาพแนบ -->
+        <div id="modalImageSection" class="hidden border-t border-slate-200 pt-3">
+          <strong class="text-gray-700 block mb-2">รูปภาพประกอบ:</strong>
+          <a id="modalImageUrl" href="#" target="_blank" class="inline-block relative group">
+            <img id="modalImg" src="" alt="รูปภาพประกอบ" class="max-h-52 rounded-xl border border-slate-200 object-cover shadow-sm group-hover:opacity-90 transition-all">
+            <span class="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded-md backdrop-blur-sm flex items-center gap-1">
+              <i class="fa-solid fa-up-right-from-square"></i> ดูภาพขนาดเต็ม
+            </span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ฟอร์มอัปเดตสถานะ -->
+      <form onsubmit="handleUpdateStatus(event)" class="space-y-3 pt-1">
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">เปลี่ยนสถานะเรื่อง</label>
+          <select id="updateStatusSelect" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#ff5a85]">
+            <option value="รอดำเนินการ">รอดำเนินการ</option>
+            <option value="กำลังดำเนินการ">กำลังดำเนินการ</option>
+            <option value="เสร็จสิ้น">เสร็จสิ้น (แก้ไขแล้ว)</option>
+            <option value="ปฏิเสธ">ปฏิเสธเรื่องร้องเรียน</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">บันทึก/คำตอบจาก Admin (ให้ผู้แจ้งเห็น)</label>
+          <textarea id="updateAdminNote" rows="3" placeholder="ระบุความคืบหน้า หรือคำชี้แจง..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-[#ff5a85]"></textarea>
+        </div>
+
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeTicketModal()" class="w-1/3 bg-slate-100 hover:bg-slate-200 text-gray-600 font-bold py-2.5 rounded-xl text-xs transition-all">
+            ยกเลิก
+          </button>
+          <button type="submit" id="saveStatusBtn" class="w-2/3 bg-[#ff5a85] hover:bg-[#e04870] text-white font-bold py-2.5 rounded-xl text-xs shadow-md shadow-pink-200 transition-all flex items-center justify-center gap-2">
+            <span>บันทึกการเปลี่ยนแปลง</span>
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- 🔴 Modal ยืนยันการลบรายการ (Custom Delete Confirm UI) -->
+  <div id="deleteModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 text-center max-w-sm w-full shadow-2xl space-y-4">
+      <div class="w-14 h-14 bg-rose-100 text-rose-500 rounded-full flex items-center justify-center mx-auto text-xl">
+        <i class="fa-solid fa-trash-can"></i>
+      </div>
+      <div>
+        <h3 class="text-base font-bold text-gray-800">ยืนยันการลบเรื่องร้องเรียน?</h3>
+        <p class="text-xs text-gray-500 mt-1">คุณต้องการลบเคส <span id="deleteTicketIdText" class="font-bold text-rose-500"></span> ใช่หรือไม่?</p>
+        <p class="text-[11px] text-rose-400 mt-1 bg-rose-50 p-2 rounded-xl mt-2">*ข้อมูลจะถูกลบออกจาก Google Sheets ทันทีและไม่สามารถกู้คืนได้</p>
+      </div>
+      <div class="flex gap-2 pt-1">
+        <button onclick="closeDeleteModal()" class="w-1/2 bg-slate-100 hover:bg-slate-200 py-2.5 rounded-xl text-xs font-bold text-gray-600 transition-all">
+          ยกเลิก
+        </button>
+        <button id="confirmDeleteBtn" onclick="executeDeleteTicket()" class="w-1/2 bg-rose-500 hover:bg-rose-600 text-white py-2.5 rounded-xl text-xs font-bold shadow-md shadow-rose-200 transition-all flex items-center justify-center gap-1.5">
+          <span>ยืนยันลบ</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔔 Modal แจ้งเตือนข้อความทั่วไป (แทนที่ alert) -->
+  <div id="alertModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 text-center max-w-xs w-full shadow-2xl space-y-4">
+      <div id="alertIconBg" class="w-14 h-14 rounded-full flex items-center justify-center mx-auto text-xl">
+        <i id="alertIcon" class="fa-solid"></i>
+      </div>
+      <div>
+        <h3 id="alertTitle" class="text-base font-bold text-gray-800">แจ้งเตือน</h3>
+        <p id="alertMessage" class="text-xs text-gray-500 mt-1">รายละเอียด...</p>
+      </div>
+      <button onclick="closeAlertModal()" class="w-full bg-[#ff5a85] hover:bg-[#e04870] text-white py-2.5 rounded-xl text-xs font-bold shadow-md transition-all">
+        ตกลง
+      </button>
+    </div>
+  </div>
+
+  <!-- 🟢 Modal ยืนยัน Logout -->
+  <div id="logoutModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 text-center max-w-xs w-full shadow-2xl space-y-4">
+      <div class="w-14 h-14 bg-pink-100 text-[#ff5a85] rounded-full flex items-center justify-center mx-auto text-xl">
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </div>
+      <h3 class="text-base font-bold text-gray-800">ออกจากระบบ Admin?</h3>
+      <div class="flex gap-2">
+        <button onclick="closeLogoutModal()" class="w-1/2 bg-slate-100 py-2.5 rounded-xl text-xs font-bold text-gray-600">ยกเลิก</button>
+        <button onclick="handleLogout()" class="w-1/2 bg-[#ff5a85] text-white py-2.5 rounded-xl text-xs font-bold shadow-md">ออกจากระบบ</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let rawTicketsData = [];
+    let currentSelectedTicketId = null;
+    let ticketIdToDelete = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. ตรวจสอบสิทธิ์ Admin
+      checkAdminAuth();
+
+      // 2. โหลดชื่อแอปพลิเคชัน
+      if (typeof CONFIG !== 'undefined' && CONFIG.APP_NAME) {
+        document.title = `Admin Dashboard - ${CONFIG.APP_NAME}`;
+        document.getElementById('appTitle').innerText = CONFIG.APP_NAME;
+      }
+
+      // 3. ดึงข้อมูลเคสทั้งหมด
+      fetchAdminTickets();
+    });
+
+    // 🔔 ระบบ UI Custom Alert แทนที่ alert()
+    function showAlert(title, message, type = 'success') {
+      const modal = document.getElementById('alertModal');
+      const iconBg = document.getElementById('alertIconBg');
+      const icon = document.getElementById('alertIcon');
+      const titleEl = document.getElementById('alertTitle');
+      const msgEl = document.getElementById('alertMessage');
+
+      titleEl.innerText = title;
+      msgEl.innerText = message;
+
+      if (type === 'success') {
+        iconBg.className = 'w-14 h-14 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto text-xl';
+        icon.className = 'fa-solid fa-circle-check';
+      } else if (type === 'error') {
+        iconBg.className = 'w-14 h-14 bg-rose-100 text-rose-500 rounded-full flex items-center justify-center mx-auto text-xl';
+        icon.className = 'fa-solid fa-triangle-exclamation';
+      } else {
+        iconBg.className = 'w-14 h-14 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center mx-auto text-xl';
+        icon.className = 'fa-solid fa-circle-info';
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeAlertModal() {
+      document.getElementById('alertModal').classList.add('hidden');
+    }
+
+    // ตรวจสอบว่าเป็น Admin หรือไม่
+    function checkAdminAuth() {
+      const userJson = localStorage.getItem('currentUser');
+      if (!userJson || userJson === 'null') {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      try {
+        const user = JSON.parse(userJson);
+        if (user.role !== 'admin') {
+          showAlert('ไม่มีสิทธิ์เข้าถึง', 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้', 'error');
+          setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+          return;
+        }
+        document.getElementById('adminName').textContent = user.name || 'Admin';
+      } catch (e) {
+        window.location.href = 'login.html';
+      }
+    }
+
+    // ดึงข้อมูล Tickets จาก Google Apps Script
+    async function fetchAdminTickets() {
+      const tbody = document.getElementById('ticketTableBody');
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" class="py-12 text-center text-gray-400">
+            <i class="fa-solid fa-spinner fa-spin text-2xl mb-2 text-[#ff5a85]"></i>
+            <p>กำลังโหลดรายการข้อมูล...</p>
+          </td>
+        </tr>`;
+
+      try {
+        const response = await fetch(CONFIG.SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'getAdminTickets' })
+        });
+
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          rawTicketsData = result.data || [];
+          updateStats(rawTicketsData);
+          renderTicketTable(rawTicketsData);
+        } else {
+          tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-rose-500 font-semibold">${result.message || 'ไม่สามารถโหลดข้อมูลได้'}</td></tr>`;
+        }
+      } catch (error) {
+        console.error('Fetch Admin Tickets Error:', error);
+        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-rose-500 font-semibold">เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล</td></tr>`;
+      }
+    }
+
+    // อัปเดตสถิติบน Cards
+    function updateStats(tickets) {
+      document.getElementById('statTotal').innerText = tickets.length;
+      document.getElementById('statPending').innerText = tickets.filter(t => t.status === 'รอดำเนินการ').length;
+      document.getElementById('statProgress').innerText = tickets.filter(t => t.status === 'กำลังดำเนินการ').length;
+      document.getElementById('statResolved').innerText = tickets.filter(t => t.status === 'เสร็จสิ้น').length;
+    }
+
+    // แสดงผลตาราง รายการข้อมูล
+    function renderTicketTable(tickets) {
+      const tbody = document.getElementById('ticketTableBody');
+      
+      if (!tickets || tickets.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-12 text-center text-gray-400">ไม่พบรายการข้อมูลเรื่องร้องเรียน</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = tickets.map(t => {
+        let statusBadge = '';
+        if (t.status === 'เสร็จสิ้น') statusBadge = `<span class="bg-emerald-50 text-emerald-600 font-bold px-2.5 py-1 rounded-full text-[11px]"><i class="fa-solid fa-circle-check"></i> เสร็จสิ้น</span>`;
+        else if (t.status === 'กำลังดำเนินการ') statusBadge = `<span class="bg-blue-50 text-blue-600 font-bold px-2.5 py-1 rounded-full text-[11px]"><i class="fa-solid fa-spinner fa-spin"></i> กำลังดำเนินการ</span>`;
+        else if (t.status === 'ปฏิเสธ') statusBadge = `<span class="bg-rose-50 text-rose-600 font-bold px-2.5 py-1 rounded-full text-[11px]"><i class="fa-solid fa-circle-xmark"></i> ปฏิเสธ</span>`;
+        else statusBadge = `<span class="bg-amber-50 text-amber-600 font-bold px-2.5 py-1 rounded-full text-[11px]"><i class="fa-solid fa-clock"></i> รอดำเนินการ</span>`;
+
+        // 🖼️ ปุ่มแสดงรูปภาพแนบ
+        const hasImage = t.imageUrl && t.imageUrl !== '-' && t.imageUrl.trim() !== '';
+        const imageBtn = hasImage 
+          ? `<a href="${t.imageUrl}" target="_blank" class="bg-pink-50 hover:bg-pink-100 text-[#ff5a85] font-semibold px-2.5 py-1 rounded-xl text-[11px] inline-flex items-center gap-1 transition-all" title="เปิดดูรูปภาพ">
+               <i class="fa-solid fa-image"></i> รูปภาพ
+             </a>`
+          : `<span class="text-gray-300">-</span>`;
+
+        return `
+          <tr class="hover:bg-slate-50/80 transition-colors">
+            <td class="py-3.5 px-3 font-bold text-[#ff5a85]">${t.ticketId || '-'}</td>
+            <td class="py-3.5 px-3 text-gray-500 text-[11px]">${t.createdAt || '-'}</td>
+            <td class="py-3.5 px-3 font-medium text-gray-800 max-w-[180px] truncate">${t.subject || '-'}</td>
+            <td class="py-3.5 px-3 text-gray-500">${t.category || '-'}</td>
+            <td class="py-3.5 px-3 text-center">${imageBtn}</td>
+            <td class="py-3.5 px-3 text-center">${statusBadge}</td>
+            <td class="py-3.5 px-3 text-center">
+              <div class="flex items-center justify-center gap-1.5">
+                <button onclick="openTicketModal('${t.ticketId}')" class="bg-pink-50 hover:bg-[#ff5a85] hover:text-white text-[#ff5a85] font-semibold px-2.5 py-1.5 rounded-xl transition-all" title="จัดการ/แก้ไข">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button onclick="confirmDeleteTicket('${t.ticketId}')" class="bg-rose-50 hover:bg-rose-500 hover:text-white text-rose-500 font-semibold px-2.5 py-1.5 rounded-xl transition-all" title="ลบรายการ">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ค้นหา และ กรองข้อมูล
+    function filterTickets() {
+      const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
+      const statusVal = document.getElementById('statusFilter').value;
+
+      const filtered = rawTicketsData.filter(t => {
+        const matchesSearch = (t.ticketId && t.ticketId.toLowerCase().includes(searchVal)) ||
+                              (t.subject && t.subject.toLowerCase().includes(searchVal)) ||
+                              (t.reporterName && t.reporterName.toLowerCase().includes(searchVal));
+        
+        const matchesStatus = (statusVal === 'ALL') || (t.status === statusVal);
+
+        return matchesSearch && matchesStatus;
+      });
+
+      renderTicketTable(filtered);
+    }
+
+    // เปิด Modal รายละเอียด/แก้ไข
+    function openTicketModal(ticketId) {
+      const ticket = rawTicketsData.find(t => t.ticketId === ticketId);
+      if (!ticket) return;
+
+      currentSelectedTicketId = ticketId;
+      document.getElementById('modalTicketId').innerText = ticket.ticketId;
+      document.getElementById('modalSubject').innerText = ticket.subject || 'ไม่มีหัวข้อ';
+      document.getElementById('modalReporter').innerText = ticket.reporterName || 'ไม่ระบุชื่อ';
+      document.getElementById('modalCategory').innerText = ticket.category || 'ทั่วไป';
+      document.getElementById('modalDate').innerText = ticket.createdAt || '-';
+      document.getElementById('modalCurrentStatus').innerText = ticket.status || 'รอดำเนินการ';
+      document.getElementById('modalDetail').innerText = ticket.detail || '-';
+
+      // 🖼️ จัดการส่วนรูปภาพแนบ
+      const imgSection = document.getElementById('modalImageSection');
+      const imgElement = document.getElementById('modalImg');
+      const imgLink = document.getElementById('modalImageUrl');
+
+      if (ticket.imageUrl && ticket.imageUrl !== '-' && ticket.imageUrl.trim() !== '') {
+        imgElement.src = ticket.imageUrl;
+        imgLink.href = ticket.imageUrl;
+        imgSection.classList.remove('hidden');
+      } else {
+        imgSection.classList.add('hidden');
+        imgElement.src = '';
+        imgLink.href = '#';
+      }
+
+      document.getElementById('updateStatusSelect').value = ticket.status || 'รอดำเนินการ';
+      document.getElementById('updateAdminNote').value = ticket.adminNote || '';
+
+      document.getElementById('ticketModal').classList.remove('hidden');
+    }
+
+    function closeTicketModal() {
+      document.getElementById('ticketModal').classList.add('hidden');
+      currentSelectedTicketId = null;
+    }
+
+    // อัปเดตสถานะไปยัง Apps Script
+    async function handleUpdateStatus(e) {
+      e.preventDefault();
+      if (!currentSelectedTicketId) return;
+
+      const saveBtn = document.getElementById('saveStatusBtn');
+      const newStatus = document.getElementById('updateStatusSelect').value;
+      const adminNote = document.getElementById('updateAdminNote').value;
+
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...`;
+
+      try {
+        const response = await fetch(CONFIG.SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'updateTicketStatus',
+            ticketId: currentSelectedTicketId,
+            status: newStatus,
+            adminNote: adminNote
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          closeTicketModal();
+          showAlert('สำเร็จ', 'บันทึกการอัปเดตเรียบร้อยแล้ว', 'success');
+          fetchAdminTickets(); // รีโหลดตารางใหม่
+        } else {
+          showAlert('เกิดข้อผิดพลาด', result.message || 'ไม่สามารถอัปเดตข้อมูลได้', 'error');
+        }
+      } catch (err) {
+        console.error('Update Status Error:', err);
+        showAlert('เกิดข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้', 'error');
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = `<span>บันทึกการเปลี่ยนแปลง</span>`;
+      }
+    }
+
+    // 🔴 เปิด Modal ยืนยันการลบรายการ
+    function confirmDeleteTicket(ticketId) {
+      ticketIdToDelete = ticketId;
+      document.getElementById('deleteTicketIdText').innerText = `[ ${ticketId} ]`;
+      document.getElementById('deleteModal').classList.remove('hidden');
+    }
+
+    function closeDeleteModal() {
+      document.getElementById('deleteModal').classList.add('hidden');
+      ticketIdToDelete = null;
+    }
+
+    // 🗑️ ส่งคำสั่งลบไปยัง Google Apps Script
+    async function executeDeleteTicket() {
+      if (!ticketIdToDelete) return;
+
+      const deleteBtn = document.getElementById('confirmDeleteBtn');
+      deleteBtn.disabled = true;
+      deleteBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังลบ...`;
+
+      try {
+        const response = await fetch(CONFIG.SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'deleteTicket',
+            ticketId: ticketIdToDelete
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          closeDeleteModal();
+          showAlert('ลบรายการสำเร็จ', `ลบเรื่องร้องเรียน ${ticketIdToDelete} เรียบร้อยแล้ว`, 'success');
+          fetchAdminTickets(); // รีโหลดตารางใหม่
+        } else {
+          closeDeleteModal();
+          showAlert('เกิดข้อผิดพลาด', result.message || 'ไม่สามารถลบข้อมูลได้', 'error');
+        }
+      } catch (err) {
+        console.error('Delete Ticket Error:', err);
+        closeDeleteModal();
+        showAlert('เกิดข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์เพื่อลบข้อมูลได้', 'error');
+      } finally {
+        deleteBtn.disabled = false;
+        deleteBtn.innerHTML = `<span>ยืนยันลบ</span>`;
+      }
+    }
+
+    // จัดการการ Logout
+    function confirmLogout() {
+      document.getElementById('logoutModal').classList.remove('hidden');
+    }
+
+    function closeLogoutModal() {
+      document.getElementById('logoutModal').classList.add('hidden');
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('currentUser');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>
