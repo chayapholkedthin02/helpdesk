@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>แจ้งเรื่องร้องเรียน - กนค. HELPDESK</title>
+  
+  <!-- Google Fonts: Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body { font-family: 'Prompt', sans-serif; }
+  </style>
+
+  <!-- นำเข้าไฟล์ Config ส่วนกลาง -->
+  <script src="config.js"></script>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col justify-between selection:bg-pink-200">
+
+  <div class="relative">
+    
+    <!-- Header ส่วนแบนเนอร์สีชมพู -->
+    <header class="bg-[#ff5a85] text-white pt-10 pb-28 px-4 shadow-sm text-center relative">
+      <div class="max-w-md mx-auto flex flex-col items-center">
+        <!-- ปุ่มย้อนกลับ -->
+        <a href="index.html" class="absolute top-4 left-4 bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm transition-all flex items-center gap-1.5">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>หน้าหลัก</span>
+        </a>
+
+        <h1 id="appTitle" class="text-2xl sm:text-3xl font-extrabold tracking-wide mt-2">
+          แจ้งเรื่องร้องเรียน
+        </h1>
+        <p class="text-xs font-light opacity-90 mt-1">
+          กนค. ครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย
+        </p>
+      </div>
+    </header>
+
+    <!-- Content ฟอร์มกรอกข้อมูล -->
+    <main class="px-4 -mt-16 mb-10 flex justify-center relative z-10">
+      <div class="bg-white w-full max-w-md rounded-[2.5rem] p-6 sm:p-8 shadow-xl shadow-pink-200/30 border border-pink-50">
+        
+        <form id="complaintForm" onsubmit="submitReport(event)" class="space-y-4">
+          
+          <!-- ช่องกรอก: ชื่อ-นามสกุล -->
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">
+              <i class="fa-regular fa-user text-[#ff5a85] mr-1"></i> ชื่อ-นามสกุล ผู้แจ้ง
+            </label>
+            <input type="text" id="senderName" required placeholder="ระบุชื่อ-นามสกุลของคุณ" 
+              class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:border-[#ff5a85] focus:bg-white text-sm outline-none transition-all">
+          </div>
+
+          <!-- ช่องกรอก: หัวข้อเรื่อง -->
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">
+              <i class="fa-solid fa-heading text-[#ff5a85] mr-1"></i> หัวข้อเรื่องร้องเรียน
+            </label>
+            <input type="text" id="subject" required placeholder="เช่น ไฟฟ้าในห้องเรียนชำรุด, แอร์ไม่เย็น" 
+              class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:border-[#ff5a85] focus:bg-white text-sm outline-none transition-all">
+          </div>
+          
+          <!-- ช่องกรอก: หมวดหมู่ปัญหา -->
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">
+              <i class="fa-solid fa-layer-group text-[#ff5a85] mr-1"></i> หมวดหมู่ปัญหา
+            </label>
+            <select id="category" required 
+              class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:border-[#ff5a85] focus:bg-white text-sm outline-none transition-all text-gray-700">
+              <option value="">-- กรุณาเลือกหมวดหมู่ --</option>
+              <option value="อาคารสถานที่ / สิ่งอำนวยความสะดวก">อาคารสถานที่ / สิ่งอำนวยความสะดวก</option>
+              <option value="การเรียนการสอน / วิชาการ">การเรียนการสอน / วิชาการ</option>
+              <option value="สวัสดิการนิสิต">สวัสดิการนิสิต</option>
+              <option value="กิจกรรม / โครงการ">กิจกรรม / โครงการ</option>
+              <option value="อื่นๆ">เรื่องร้องเรียนอื่นๆ</option>
+            </select>
+          </div>
+
+          <!-- ช่องกรอก: รายละเอียด -->
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">
+              <i class="fa-regular fa-file-lines text-[#ff5a85] mr-1"></i> รายละเอียดเรื่องร้องเรียน
+            </label>
+            <textarea id="detail" rows="4" required placeholder="อธิบายรายละเอียด เหตุการณ์ หรือสถานที่ที่พบปัญหา..." 
+              class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:border-[#ff5a85] focus:bg-white text-sm outline-none transition-all resize-none"></textarea>
+          </div>
+
+          <!-- ช่องแนบไฟล์รูปภาพ -->
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">
+              <i class="fa-regular fa-image text-[#ff5a85] mr-1"></i> แนบรูปภาพประกอบ (ถ้ามี)
+            </label>
+            
+            <div class="relative border-2 border-dashed border-pink-200 hover:border-[#ff5a85] rounded-2xl p-4 text-center bg-pink-50/20 transition-all cursor-pointer">
+              <input type="file" id="imageInput" accept="image/*" onchange="previewImage(event)" 
+                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+              
+              <div id="uploadPlaceholder" class="space-y-1">
+                <i class="fa-solid fa-cloud-arrow-up text-2xl text-[#ff5a85]"></i>
+                <p class="text-xs text-gray-500 font-medium">คลิกเพื่อเลือกรูปภาพ หรือถ่ายภาพ</p>
+                <p class="text-[10px] text-gray-400">รองรับไฟล์ JPG, PNG</p>
+              </div>
+
+              <!-- แสดงตัวอย่างรูปถ่าย -->
+              <div id="previewContainer" class="hidden relative mt-1">
+                <img id="imagePreview" src="" alt="Preview" class="max-h-40 mx-auto rounded-xl object-contain shadow-sm">
+                <p id="fileName" class="text-[11px] text-gray-500 mt-2 truncate"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ปุ่มกดส่งข้อมูล -->
+          <button type="submit" id="submitBtn" 
+            class="w-full bg-[#ff5a85] hover:bg-[#e04870] active:scale-[0.98] text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-pink-200 transition-all flex items-center justify-center gap-2 mt-4 cursor-pointer">
+            <i class="fa-solid fa-paper-plane"></i>
+            <span>ส่งเรื่องร้องเรียน</span>
+          </button>
+
+        </form>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal แจ้งเตือนสถานะ -->
+  <div id="statusModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 transition-all">
+    <div class="bg-white rounded-3xl p-6 text-center max-w-sm w-full shadow-2xl space-y-4">
+      
+      <!-- ไอคอนสถานะ -->
+      <div id="modalIconBg" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto text-2xl transition-all">
+        <i id="modalIcon" class="fa-solid"></i>
+      </div>
+      
+      <!-- ข้อความหัวเรื่องและรายละเอียด -->
+      <h3 id="modalTitle" class="text-xl font-bold text-gray-800"></h3>
+      <p id="modalMessage" class="text-xs text-gray-500 leading-relaxed whitespace-pre-line"></p>
+      
+      <!-- ช่องแสดง Ticket ID -->
+      <div id="ticketContainer" class="hidden bg-slate-100 p-3 rounded-2xl flex items-center justify-between border border-slate-200">
+        <span id="ticketDisplay" class="font-mono font-bold text-[#ff5a85] text-base"></span>
+        <button onclick="copyTicket()" class="text-xs bg-white text-gray-600 hover:text-[#ff5a85] px-2.5 py-1 rounded-xl border border-slate-200 font-semibold shadow-sm transition-all active:scale-95">
+          <i class="fa-regular fa-copy mr-1"></i>คัดลอก
+        </button>
+      </div>
+
+      <!-- ปุ่มดำเนินการต่อ -->
+      <div id="modalActionBtnContainer" class="space-y-2">
+        <a id="modalPrimaryBtn" href="index.html" class="block w-full bg-[#ff5a85] hover:bg-[#e04870] text-white font-bold py-3 rounded-2xl text-sm transition-all shadow-md shadow-pink-100">
+          กลับสู่หน้าหลัก
+        </a>
+        <button id="modalCloseBtn" onclick="closeModal()" class="hidden w-full bg-slate-100 hover:bg-slate-200 text-gray-600 font-bold py-3 rounded-2xl text-sm transition-all">
+          ปิดหน้าต่าง
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="pb-6 text-center text-xs text-gray-400">
+    &copy; คณะกรรมการนิสิตปริญญาบัณฑิตคณะครุศาสตร์ จุฬาฯ
+  </footer>
+
+  <!-- Script การทำงาน -->
+  <script>
+    let base64ImageString = "";
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // ดึงข้อมูลชื่อผู้ใช้ที่ล็อกอินอยู่มาเติมลงช่องชื่อผู้แจ้งอัตโนมัติ
+      const userJson = localStorage.getItem('currentUser');
+      if (userJson && userJson !== 'null') {
+        try {
+          const user = JSON.parse(userJson);
+          if (user.name) {
+            document.getElementById('senderName').value = user.name;
+          }
+        } catch (e) {}
+      }
+    });
+
+    // แสดงตัวอย่างรูปภาพและแปลงเป็น Base64
+    function previewImage(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        base64ImageString = e.target.result; // เก็บค่า Base64
+        document.getElementById('imagePreview').src = e.target.result;
+        document.getElementById('fileName').innerText = file.name;
+        document.getElementById('uploadPlaceholder').classList.add('hidden');
+        document.getElementById('previewContainer').classList.remove('hidden');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // ฟังก์ชันส่งข้อมูลไปยัง Google Apps Script
+    async function submitReport(event) {
+      event.preventDefault();
+
+      if (typeof CONFIG === 'undefined' || !CONFIG.SCRIPT_URL) {
+        showModal(false, 'ตั้งค่าไม่ถูกต้อง', 'ไม่พบ SCRIPT_URL ในไฟล์ config.js');
+        return;
+      }
+
+      const submitBtn = document.getElementById('submitBtn');
+      const senderName = document.getElementById('senderName').value.trim();
+      const subject = document.getElementById('subject').value.trim();
+      const category = document.getElementById('category').value;
+      const detail = document.getElementById('detail').value.trim();
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>กำลังส่งข้อมูล...</span>`;
+
+      try {
+        const payload = {
+          action: 'addTicket', // หรือ 'createTicket' ขึ้นอยู่กับที่ตั้งไว้ใน Google Apps Script
+          reporterName: senderName,
+          subject: subject,
+          category: category,
+          detail: detail,
+          image: base64ImageString
+        };
+
+        const response = await fetch(CONFIG.SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (result.status === 'success' || result.result === 'success') {
+          const ticketId = result.ticketId || result.id || 'TK-SUCCESS';
+          showModal(true, 'ส่งเรื่องร้องเรียนสำเร็จ!', 'คณะกรรมการได้รับเรื่องของคุณเรียบร้อยแล้ว\nกรุณาบันทึก Ticket ID เพื่อติดตามสถานะ', ticketId);
+          document.getElementById('complaintForm').reset();
+          document.getElementById('uploadPlaceholder').classList.remove('hidden');
+          document.getElementById('previewContainer').classList.add('hidden');
+          base64ImageString = "";
+        } else {
+          showModal(false, 'ส่งเรื่องไม่สำเร็จ', result.message || 'เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+        }
+
+      } catch (err) {
+        console.error('Submit Report Error:', err);
+        showModal(false, 'เชื่อมต่อไม่สำเร็จ', 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาลองใหม่อีกครั้ง');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span>ส่งเรื่องร้องเรียน</span>`;
+      }
+    }
+
+    // แสดง Pop-up Modal
+    function showModal(isSuccess, title, message, ticketId = null) {
+      const modal = document.getElementById('statusModal');
+      const iconBg = document.getElementById('modalIconBg');
+      const icon = document.getElementById('modalIcon');
+      const titleEl = document.getElementById('modalTitle');
+      const msgEl = document.getElementById('modalMessage');
+      const ticketBox = document.getElementById('ticketContainer');
+      const ticketText = document.getElementById('ticketDisplay');
+      const primaryBtn = document.getElementById('modalPrimaryBtn');
+      const closeBtn = document.getElementById('modalCloseBtn');
+
+      titleEl.innerText = title;
+      msgEl.innerText = message;
+
+      if (isSuccess) {
+        iconBg.className = 'w-16 h-16 bg-pink-100 text-[#ff5a85] rounded-full flex items-center justify-center mx-auto text-2xl';
+        icon.className = 'fa-solid fa-circle-check';
+        if (ticketId) {
+          ticketText.innerText = ticketId;
+          ticketBox.classList.remove('hidden');
+        }
+        primaryBtn.classList.remove('hidden');
+        closeBtn.classList.add('hidden');
+      } else {
+        iconBg.className = 'w-16 h-16 bg-rose-100 text-rose-500 rounded-full flex items-center justify-center mx-auto text-2xl';
+        icon.className = 'fa-solid fa-circle-xmark';
+        ticketBox.classList.add('hidden');
+        primaryBtn.classList.add('hidden');
+        closeBtn.classList.remove('hidden');
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    // คัดลอก Ticket ID
+    function copyTicket() {
+      const ticketText = document.getElementById('ticketDisplay').innerText;
+      navigator.clipboard.writeText(ticketText).then(() => {
+        alert('คัดลอก Ticket ID เรียบร้อยแล้ว: ' + ticketText);
+      });
+    }
+
+    // ปิด Modal
+    function closeModal() {
+      document.getElementById('statusModal').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
