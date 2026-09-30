@@ -21,7 +21,6 @@
       font-family: 'Prompt', sans-serif;
     }
   </style>
-  <!-- 🟢 เพิ่มบรรทัดนี้เพื่อดึงไฟล์ config.js มาใช้งาน -->
   <script src="config.js"></script>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col justify-between selection:bg-pink-200">
@@ -123,7 +122,7 @@
     </main>
   </div>
 
-  <!-- 🟢 Modal แจ้งเตือนอเนกประสงค์ (รองรับทั้งสำเร็จ และ เกิดข้อผิดพลาด) -->
+  <!-- Modal แจ้งเตือนสถานะ -->
   <div id="statusModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 transition-all">
     <div class="bg-white rounded-3xl p-6 text-center max-w-sm w-full shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
       
@@ -136,7 +135,7 @@
       <h3 id="modalTitle" class="text-xl font-bold text-gray-800"></h3>
       <p id="modalMessage" class="text-xs text-gray-500 leading-relaxed whitespace-pre-line"></p>
       
-      <!-- ช่องแสดง Ticket ID (แสดงเฉพาะตอนส่งสำเร็จ) -->
+      <!-- ช่องแสดง Ticket ID -->
       <div id="ticketContainer" class="hidden bg-slate-100 p-3 rounded-2xl flex items-center justify-between border border-slate-200">
         <span id="ticketDisplay" class="font-mono font-bold text-[#ff5a85] text-base"></span>
         <button onclick="copyTicket()" class="text-xs bg-white text-gray-600 hover:text-[#ff5a85] px-2.5 py-1 rounded-xl border border-slate-200 font-semibold shadow-sm transition-all active:scale-95">
@@ -158,11 +157,9 @@
   </div>
 
   <script>
-    // 🟢 เปลี่ยนจาก text เปล่าๆ มาดึงค่าจาก config.js แบบนี้ครับ
     const API_URL = CONFIG.SCRIPT_URL;
 
     document.addEventListener('DOMContentLoaded', () => {
-      // ดึงชื่อผู้ใช้จาก localStorage ถ้าเคย Login ไว้
       const userJson = localStorage.getItem('currentUser');
       if (userJson) {
         try {
@@ -174,7 +171,6 @@
       }
     });
 
-    // พรีวิวรูปภาพก่อนส่ง
     function previewImage(event) {
       const file = event.target.files[0];
       if (file) {
@@ -189,7 +185,6 @@
       }
     }
 
-    // ฟังก์ชันบีบอัดรูปภาพอัตโนมัติ (ป้องกันไฟล์ใหญ่จนยิงไม่ผ่าน/ติด CORS)
     function compressImage(file, maxWidth = 1024, quality = 0.7) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -219,7 +214,6 @@
       });
     }
 
-    // ฟังก์ชันกดส่งข้อมูล
     async function submitReport(event) {
       event.preventDefault();
       
@@ -233,24 +227,22 @@
       const fileInput = document.getElementById('imageInput');
 
       let base64Image = "";
-      let fileName = "";
 
       try {
         if (fileInput.files.length > 0) {
           const file = fileInput.files[0];
           base64Image = await compressImage(file);
-          fileName = file.name;
         }
 
+        // 🟢 แก้ไขการส่งชื่อ Key ให้เป็นภาษาอังกฤษตรงกับที่ Google Apps Script รอรับ
         const payload = {
-          "action": "createTicket", // 🟢 ระบุ Action ให้ตรงกับ Google Apps Script
-          "ชื่อ_นามสกุล": senderName,
-          "หมวดหมู่ปัญหา": category,
-          "รายละเอียด": detail,
-          "image": base64Image ? { "base64": base64Image, "name": fileName } : null
+          "action": "createTicket",
+          "name": senderName,
+          "category": category,
+          "detail": detail,
+          "image": base64Image
         };
 
-        // 🟢 ส่งข้อมูลไปยัง Google Apps Script (ใช้ออปชันป้องกันปัญหา CORS)
         const response = await fetch(API_URL, {
           method: "POST",
           headers: {
@@ -262,7 +254,6 @@
         const result = await response.json();
 
         if (result.status === "success") {
-          // แสดง Pop-up สำเร็จ
           showModal({
             isSuccess: true,
             title: "ส่งเรื่องร้องเรียนสำเร็จ!",
@@ -270,7 +261,6 @@
             ticketId: result.ticketId
           });
         } else {
-          // แสดง Pop-up ข้อผิดพลาดจากระบบ
           showModal({
             isSuccess: false,
             title: "เกิดข้อผิดพลาด!",
@@ -279,7 +269,6 @@
         }
       } catch (error) {
         console.error("Submit Error:", error);
-        // แสดง Pop-up ข้อผิดพลาดด้านการเชื่อมต่อ
         showModal({
           isSuccess: false,
           title: "เชื่อมต่อไม่สำเร็จ!",
@@ -291,7 +280,6 @@
       }
     }
 
-    // ฟังก์ชันจัดการการแสดง Modal
     function showModal({ isSuccess, title, message, ticketId = "" }) {
       const modal = document.getElementById('statusModal');
       const iconBg = document.getElementById('modalIconBg');
@@ -307,7 +295,6 @@
       messageEl.textContent = message;
 
       if (isSuccess) {
-        // ดีไซน์ Pop-up สำเร็จ (สีชมพู)
         iconBg.className = "w-16 h-16 bg-pink-100 text-[#ff5a85] rounded-full flex items-center justify-center mx-auto text-2xl";
         icon.className = "fa-solid fa-check";
         
@@ -316,7 +303,6 @@
         primaryBtn.classList.remove('hidden');
         closeBtn.classList.add('hidden');
       } else {
-        // ดีไซน์ Pop-up ข้อผิดพลาด (สีแดง)
         iconBg.className = "w-16 h-16 bg-rose-100 text-rose-500 rounded-full flex items-center justify-center mx-auto text-2xl";
         icon.className = "fa-solid fa-xmark";
         
@@ -328,12 +314,10 @@
       modal.classList.remove('hidden');
     }
 
-    // ปิด Modal
     function closeModal() {
       document.getElementById('statusModal').classList.add('hidden');
     }
 
-    // 🟢 ฟังก์ชันคัดลอก Ticket ID พร้อมแสดง Toast สวยๆ
     function copyTicket() {
       const ticketText = document.getElementById('ticketDisplay').textContent;
       navigator.clipboard.writeText(ticketText).then(() => {
@@ -343,21 +327,18 @@
       });
     }
 
-// 🟢 ฟังก์ชันแสดง Toast Notification แบบลอย (Auto-hide 2.5 วินาที)
     function showToast(message) {
       const toast = document.getElementById('toast');
       const toastMessage = document.getElementById('toastMessage');
       
       toastMessage.textContent = message;
       
-      // แสดง Toast + เล่น Animation เลื่อนลงมา
       toast.classList.remove('hidden');
       setTimeout(() => {
         toast.classList.remove('opacity-0', '-translate-y-4');
         toast.classList.add('opacity-100', 'translate-y-0');
       }, 10);
 
-      // จางหายไปเองอัตโนมัติภายใน 2.5 วินาที
       setTimeout(() => {
         toast.classList.remove('opacity-100', 'translate-y-0');
         toast.classList.add('opacity-0', '-translate-y-4');
@@ -367,7 +348,8 @@
       }, 2500);
     }
   </script>
-  <!-- 🟢 Toast Notification สวยๆ สำหรับแจ้งเตือนแบบลอย -->
+
+  <!-- Toast Notification -->
   <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-[60] hidden transition-all duration-300 transform -translate-y-4 opacity-0 pointer-events-none">
     <div class="bg-slate-900/90 text-white backdrop-blur-md px-5 py-2.5 rounded-full shadow-xl border border-slate-700/50 flex items-center gap-2.5 text-xs font-medium tracking-wide">
       <i class="fa-solid fa-circle-check text-[#ff5a85] text-sm"></i>
